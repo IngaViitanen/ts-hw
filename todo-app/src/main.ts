@@ -1,24 +1,70 @@
 import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
+import { getTodos, createTodo } from "./api.ts";
+import type { Todo } from "./api.types.ts";
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+// Get referenses
+const todosEl = document.querySelector<HTMLUListElement>("#todos")!;
+const newTodoFormEl = document.querySelector<HTMLFormElement>("#new-todo-form")!;
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+// Local variable containing all the todos from the server
+let todos: Todo[] = [];
+
+// Get todos from API and render them
+const getTodosAndRender = async () => {
+	// Get todos from server and update local copy
+	todos = await getTodos();
+
+	// Render dem todos
+	renderTodos();
+
+  // console.log('getTodosAndRender', todos)
+}
+
+//Render todos to DOM
+const renderTodos = () => {
+	todosEl.innerHTML = todos
+		.map(todo =>
+			`<li class="list-group-item d-flex justify-content-between align-items-center" data-todo-id="${todo.id}">
+				<span class="todo-item">
+					<input type="checkbox" class="me-2" ${todo.completed ? "checked" : ""} />
+					<span class="todo-title">${todo.title}</span>
+				</span>
+				<span class="todo-actions">
+					<button class="btn btn-warning">Edit</button>
+					<button class="btn btn-danger">Delete</button>
+				</span>
+			</li>`
+		)
+		.join("");
+
+    // console.log('renderTodos', todos)
+}
+
+/**
+ * Listen for new todo form being submitted
+ */
+newTodoFormEl.addEventListener("submit", (e) => {
+	e.preventDefault();
+
+	const newTodoTitleEl = document.querySelector<HTMLInputElement>("#new-todo-title")!;
+
+  const todo = {
+    id: Math.random(), //installing uuid feels like overkill for this project
+		title: newTodoTitleEl.value,
+		completed: false
+	}
+
+	// Create the todo in the API (and wait for the request to be completed)
+  createTodo(todo)
+
+	// Get todos from API (which will include the newly created todo) and re-render the list
+	getTodosAndRender();
+
+	// Clear input field
+	newTodoTitleEl.value = "";
+
+	console.log("GREAT SUCCESS!", todos);
+});
+
+// Get the todos from the API and *then* render initial list of todos
+getTodosAndRender();

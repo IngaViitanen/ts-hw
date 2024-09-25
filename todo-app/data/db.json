@@ -1,0 +1,24 @@
+{
+  "todos": [
+    {
+      "id": 1,
+      "title": "Learn basic TypeScript",
+      "completed": true
+    },
+    {
+      "id": 2,
+      "title": "Learn async TypeScript",
+      "completed": false
+    },
+    {
+      "id": 3,
+      "title": "Have fun making promises",
+      "completed": false
+    },
+    {
+      "id": 0.7605039407167438,
+      "title": "test task",
+      "completed": false
+    }
+  ]
+}
