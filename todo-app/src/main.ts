@@ -1,5 +1,5 @@
 import './style.css'
-import { getTodos, createTodo, updateTodo, deleteTodo } from "./api.ts";
+import { getTodos, createTodo, finishTodo, deleteTodo } from "./api.ts";
 import type { Todo } from "./api.types.ts";
 
 // Get referenses
@@ -18,18 +18,18 @@ export const getTodosAndRender = async () => {
   renderTodos();
 
   deleteTask()
+  checkboxTodo()
  
   
 }
 
 //Render todos to DOM
 const renderTodos = () => {
-  // onchange=${updateTodo(todo, todo.id)}
   todosEl.innerHTML = todos
     .map((todo) => {
       return `<li class="list-group-item d-flex justify-content-between align-items-center" id="list" data-todo-id="${todo.id}">
 				<span class="todo-item">
-					<input type="checkbox" id="check" class="me-2" ${todo.completed ? "checked" : ""}  />
+					<input type="checkbox" id="checkbox" class="me-2" ${todo.completed ? "checked" : ""}  />
 					<span class="todo-title">${todo.title}</span>
 				</span>
 				<span class="todo-actions">
@@ -41,9 +41,7 @@ const renderTodos = () => {
     .join("")
 }
 
-/**
- * Listen for new todo form being submitted
- */
+//Listen for new todo form being submitted
 newTodoFormEl.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -81,22 +79,19 @@ const deleteTask = () => {
        deleteTodo(id)
      }
     }))
-
-    // render list to update UI -----FIX gets stuck in infinity loop
-    // getTodosAndRender()
 }
 
-// const checkInputEl = (<HTMLInputElement>document.getElementById('#check'));
+const checkboxTodo = () => {
+  const checkbox = document.querySelectorAll<HTMLInputElement>("#checkbox")
 
-// console.log(checkInputEl)
+  checkbox.forEach(box => box.addEventListener("change", () => {
+    const id = box.parentElement?.parentElement?.getAttribute('data-todo-id')
 
-// checkInputEl?.addEventListener("change", () => {
-//   // e.preventDefault();
-//   if(checkInputEl.checked){
-//     console.log(checkInputEl.getAttribute('data-todo-id'))
-//   }
-//   // updateTodo(todo) 
-// })
+    if(id){
+      finishTodo(box.checked, id)
+    }
+  }))
+}
 
 // Get the todos from the API and *then* render initial list of todos
 getTodosAndRender();
