@@ -1,5 +1,5 @@
 import './style.css'
-import { getTodos, createTodo, finishTodo, deleteTodo } from "./api.ts";
+import { getTodos, createTodo, finishTodo, deleteTodo, editTodo } from "./api.ts";
 import type { Todo } from "./api.types.ts";
 
 // Get referenses
@@ -17,10 +17,10 @@ export const getTodosAndRender = async () => {
   // Render them todos
   renderTodos();
 
+  //Attach onclick/onchange actions to rendered todos
   deleteTask()
   checkboxTodo()
- 
-  
+  editTodoTitle()
 }
 
 //Render todos to DOM
@@ -30,16 +30,18 @@ const renderTodos = () => {
       return `<li class="list-group-item d-flex justify-content-between align-items-center" id="list" data-todo-id="${todo.id}">
 				<span class="todo-item">
 					<input type="checkbox" id="checkbox" class="me-2" ${todo.completed ? "checked" : ""}  />
-					<span class="todo-title">${todo.title}</span>
+          <span class="todo-title">${todo.title}</span>
 				</span>
 				<span class="todo-actions">
-					<button class="btn btn-warning">Edit</button>
-					<button class="delete" id="deleteBtn" >Delete</button>
+					<button class="edit" id="editBtn">edit</button>
+					<button class="delete" id="deleteBtn">delete</button>
 				</span>
 			</li>`
     })
     .join("")
 }
+
+
 
 //Listen for new todo form being submitted
 newTodoFormEl.addEventListener("submit", (e) => {
@@ -48,7 +50,7 @@ newTodoFormEl.addEventListener("submit", (e) => {
   const newTodoTitleEl = document.querySelector<HTMLInputElement>("#new-todo-title")!;
 
   const todo = {
-    id: Math.random(), //installing uuid feels like overkill for this project
+    id: Math.random().toString(), //installing uuid feels like overkill for this project
     title: newTodoTitleEl.value,
     completed: false
   }
@@ -64,6 +66,8 @@ newTodoFormEl.addEventListener("submit", (e) => {
 
   console.log("GREAT SUCCESS!", todos);
 });
+
+
 
 const deleteTask = () => {
    // Get to all delete button elements
@@ -81,6 +85,8 @@ const deleteTask = () => {
     }))
 }
 
+
+
 const checkboxTodo = () => {
   const checkbox = document.querySelectorAll<HTMLInputElement>("#checkbox")
 
@@ -91,6 +97,37 @@ const checkboxTodo = () => {
       finishTodo(box.checked, id)
     }
   }))
+}
+
+
+
+// edit todo
+const editTodoTitle = () => {
+  const editBtn = document.querySelectorAll<HTMLButtonElement>("#editBtn")
+
+  editBtn.forEach(btn => btn.addEventListener('click', () => {
+    const id = btn.parentElement?.parentElement?.getAttribute('data-todo-id')
+
+    const editTodoForm = document.querySelector<HTMLFormElement>("#edit-todo-form")!
+    const editInput = document.querySelector<HTMLInputElement>("#edit-todo")!
+
+    if(id){
+      todos.find((todo) => {
+        if(todo.id === id){
+          console.log(todo)
+          editTodoForm.style.display = "block"
+          editInput.value = todo.title
+          editTodoForm.addEventListener("submit", (e) => {
+            e.preventDefault()
+
+            editTodo(editInput.value, id)
+            editTodoForm.style.display = "none"
+          })
+        }
+      })
+     
+    }
+  }));
 }
 
 // Get the todos from the API and *then* render initial list of todos

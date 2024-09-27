@@ -40,3 +40,12 @@ export const deleteTodo = async (id: string) => {
             getTodosAndRender()
         }
 }
+
+export const editTodo = async (editedTitle: string, id: string) => {
+    const response = await axios.patch(baseUrl + `/todos/${id}`, {
+        title: editedTitle
+    })
+    if(response.status === 200) {
+        getTodosAndRender()
+    }
+}

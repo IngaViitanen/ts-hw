@@ -1,0 +1,10 @@
+body {
+  background-color: #222;
+  color: #fff7d4;
+  display: flex;
+  justify-content: center;
+}
+
+#edit-todo-form{
+  display: none;
+}
