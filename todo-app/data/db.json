@@ -7,8 +7,13 @@
     },
     {
       "id": "3",
-      "title": "Have funsies",
+      "title": "Have fun learning",
       "completed": true
+    },
+    {
+      "id": "0.14435084465131598",
+      "title": "Solve try/catch issue",
+      "completed": false
     }
   ]
 }

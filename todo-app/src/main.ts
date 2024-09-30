@@ -29,12 +29,12 @@ const renderTodos = () => {
     .map((todo) => {
       return `<li class="list-group-item d-flex justify-content-between align-items-center" id="list" data-todo-id="${todo.id}">
 				<span class="todo-item">
-					<input type="checkbox" id="checkbox" class="me-2" ${todo.completed ? "checked" : ""}  />
+          <input type="checkbox" id="checkbox" class="me-2" ${todo.completed ? "checked" : ""}  />
           <span class="todo-title">${todo.title}</span>
 				</span>
 				<span class="todo-actions">
-					<button class="edit" id="editBtn">edit</button>
-					<button class="delete" id="deleteBtn">delete</button>
+					<button class="edit" id="editBtn">🖋️</button>
+					<button class="delete" id="deleteBtn">🗑️</button>
 				</span>
 			</li>`
     })
@@ -78,7 +78,7 @@ const deleteTask = () => {
      // get data set from parent list element
      const id = btn.parentElement?.parentElement?.getAttribute('data-todo-id')
 
-     //since the ul list can be empty we need to check that the id is a string::Type Narrowing
+     //since the ul list can be empty we need to check that the id exists and is a string::Type Narrowing
      if(id) {
        deleteTodo(id)
      }
@@ -106,27 +106,34 @@ const editTodoTitle = () => {
   const editBtn = document.querySelectorAll<HTMLButtonElement>("#editBtn")
 
   editBtn.forEach(btn => btn.addEventListener('click', () => {
-    const id = btn.parentElement?.parentElement?.getAttribute('data-todo-id')
+    // e.preventDefault()
+    const id = btn.parentElement?.parentElement?.getAttribute('data-todo-id')!
+    console.log('click',  id)
 
     const editTodoForm = document.querySelector<HTMLFormElement>("#edit-todo-form")!
     const editInput = document.querySelector<HTMLInputElement>("#edit-todo")!
 
-    if(id){
+    //FIX: patch behaves weird with the id
+
+    // if(id){
       todos.find((todo) => {
         if(todo.id === id){
-          console.log(todo)
-          editTodoForm.style.display = "block"
+          console.log(todo.id, id)
+          editTodoForm.style.display = "flex"
           editInput.value = todo.title
           editTodoForm.addEventListener("submit", (e) => {
-            e.preventDefault()
+            // e.preventDefault() reloading resets the id but mm idk
 
             editTodo(editInput.value, id)
             editTodoForm.style.display = "none"
+            editTodoForm.
+            console.log(id)
+            // id = ""
           })
         }
       })
      
-    }
+    // }
   }));
 }
 

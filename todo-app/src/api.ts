@@ -29,9 +29,10 @@ export const createTodo = async (todo: Todo) => {
 
 // Mark todo finished or unfinished
 export const finishTodo = async (isCompleted: boolean, id: string) => {
-    await axios.patch(baseUrl + `/todos/${id}`, {
+    const response = await axios.patch(baseUrl + `/todos/${id}`, {
         completed: isCompleted
     })
+    console.log(response)
 }
 
 export const deleteTodo = async (id: string) => {
@@ -42,10 +43,17 @@ export const deleteTodo = async (id: string) => {
 }
 
 export const editTodo = async (editedTitle: string, id: string) => {
-    const response = await axios.patch(baseUrl + `/todos/${id}`, {
-        title: editedTitle
-    })
-    if(response.status === 200) {
-        getTodosAndRender()
+    console.log(id)
+    try {
+        const response = await axios.patch(baseUrl + `/todos/${id}`, {
+            title: editedTitle
+        })
+        if(response.status === 200) {
+            console.log(response)
+            getTodosAndRender()
+        }
+        console.log(response)
+    } catch (error) {
+        console.error(error)
     }
 }
