@@ -1,1 +1,1 @@
-# ts-hw
+# TypeScript homework
