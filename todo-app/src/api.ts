@@ -32,6 +32,9 @@ export const finishTodo = async (isCompleted: boolean, id: string) => {
     const response = await axios.patch(baseUrl + `/todos/${id}`, {
         completed: isCompleted
     })
+    if(response.status === 200) {
+        getTodosAndRender()
+    }
     console.log(response)
 }
 

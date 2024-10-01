@@ -1,3 +1,7 @@
+:root {
+  --main-back-color: #fafafa
+}
+
 *{
   margin: 0;
   padding: 0;
@@ -16,14 +20,8 @@ body {
 }
 
 h2{
-  text-decoration: underline;
-}
-
-.current-tasks-wrapper{
-  background-color: #fff;
-  padding: 1rem;
-  margin: 1rem;
-  border: 3px solid black;
+  margin: 24px 24px 0 24px;
+  border-bottom: 3px solid black;
 }
 
 #new-todo-form{
@@ -31,14 +29,28 @@ h2{
   flex-direction: column;
   justify-content: space-evenly;
   height: 200px;
-  background-color: #fff;
-  padding: 0 1em;
+  background-color: var(--main-back-color);
+  padding: 1em;
   border: 3px solid black;
   margin: 1rem;
+  border-radius: 10px;
 }
 
 .new-todo-actions{
   align-self: flex-end;
+  margin: 0 24px 24px 0;
+}
+
+#edit-modal{
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -25%);
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
+  display: none;
 }
 
 #edit-todo-form{
@@ -46,26 +58,32 @@ h2{
   top: 25%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #fff;
-  /* padding: 20px; */
+  background-color: var(--main-back-color);
+  padding: 20px;
   border: 3px solid black;
   height: 180px;
   width: 440px;
+  display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-  align-items: center;
-  display: none;
+  /* display: none; */
+  border-radius: 10px;
 }
 
 input{
   height: 2rem;
   width: 300px;
   font-weight: bold;
-  /* border-radius: 90px; */
+  background-color: transparent;
   border: none;
   border-bottom: 3px solid black;
   font-size: 1em;
   padding: 0.5em 0.5em;
+  margin: 24px;
+}
+
+input#edit-todo{
+  width: auto;
 }
 
 button{
@@ -79,16 +97,31 @@ button{
 button.delete, button.edit{
   background-color: transparent;
   font-size: 1em;
-  padding: 0 0.5em;
+  padding: 0.2em;
+  transform: scaleX(-1);
+}
+
+button.save-edit{
+  align-self: flex-end;
+  margin: 0 24px 24px 0;
 }
 
 #checkbox{
   width: 20px;
   height: 20px;
+  margin-right: 0.5em;
 }
 
 #checkbox:checked{
   accent-color: rgb(98, 214, 148);
+}
+
+.current-tasks-wrapper{
+  background-color: var(--main-back-color);
+  padding: 1rem;
+  margin: 1rem;
+  border: 3px solid black;
+  border-radius: 10px;
 }
 
 li{
@@ -96,18 +129,19 @@ li{
   display: flex;
   justify-content: space-between;
   font-size: 1.4em;
-  padding: 8px 16px;
-  /* background: lightblue; */
-  /* border-radius: 10px; */
+  padding-top: 8px;
   border-bottom: 2px solid black;
-  margin: 12px;
+  margin: 24px;
+}
+
+.todo-title.finished{
+  text-decoration: line-through;
 }
 
 .todo-item{
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding-bottom: 1rem;
 }
 
 .todo-item > *{
@@ -117,5 +151,6 @@ li{
 .todo-actions{
   display: flex;
   justify-content: flex-end;
+  padding-left: 2em;
 }
 

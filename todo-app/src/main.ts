@@ -30,11 +30,11 @@ const renderTodos = () => {
       return `<li class="list-group-item d-flex justify-content-between align-items-center" id="list" data-todo-id="${todo.id}">
 				<span class="todo-item">
           <input type="checkbox" id="checkbox" class="me-2" ${todo.completed ? "checked" : ""}  />
-          <span class="todo-title">${todo.title}</span>
+          <span class="todo-title ${todo.completed ? " finished" : ""}">${todo.title}</span>
 				</span>
 				<span class="todo-actions">
-					<button class="edit" id="editBtn">🖋️</button>
-					<button class="delete" id="deleteBtn">🗑️</button>
+					<button class="edit" id="editBtn">✏️</button>
+					<button class="delete" id="deleteBtn">❌</button>
 				</span>
 			</li>`
     })
@@ -111,6 +111,7 @@ const editTodoTitle = () => {
     console.log('click',  id)
 
     const editTodoForm = document.querySelector<HTMLFormElement>("#edit-todo-form")!
+    const editModal = document.querySelector<HTMLDivElement>("#edit-modal")!
     const editInput = document.querySelector<HTMLInputElement>("#edit-todo")!
 
     //FIX: patch behaves weird with the id
@@ -119,13 +120,15 @@ const editTodoTitle = () => {
       todos.find((todo) => {
         if(todo.id === id){
           console.log(todo.id, id)
-          editTodoForm.style.display = "flex"
+          // editTodoForm.style.display = "flex"
+          editModal.style.display = "block"
           editInput.value = todo.title
           editTodoForm.addEventListener("submit", (e) => {
             // e.preventDefault() reloading resets the id but mm idk
 
             editTodo(editInput.value, id)
-            editTodoForm.style.display = "none"
+            // editTodoForm.style.display = "none"
+            editModal.style.display = "none"
             editTodoForm.
             console.log(id)
             // id = ""
