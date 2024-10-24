@@ -3,60 +3,97 @@
  */
 import axios from "axios";
 import type { Todo } from "./api.types";
-import { getTodosAndRender } from "./main";
 
-const baseUrl = import.meta.env.VITE_API_BASEURL as string;
+const baseURL = import.meta.env.VITE_API_BASEURL as string || "http://localhost:3000";
 
-// Get todos from API using axios
-export const getTodos = async () => {
-	const response = await axios.get<Todo[]>(baseUrl + "/todos");
+// Create a new axios instance
+const instance = axios.create({
+	baseURL,
+	headers: {
+		"Accept": "application/json",
+		"Content-Type": "application/json",
+	},
+	timeout: 10000,
+});
+
+/**
+ * Get todos from API using fetch
+ */
+export const getTodosFetch = async () => {
+	const response = await fetch(baseURL + "/todos");    // http://localhost:3000/todos
+//         ^?
+
+	if (!response.ok) {
+		throw new Error("Response was not OK!");
+	}
+
+	const data: Todo[] = await response.json();
+//        ^?
+
+	// if (!data.length) {
+	// 	throw new Error("No todos!");
+	// }
+
+	return data;
+}
+
+/**
+ * Make a generic HTTP GET Request
+ *
+ * @param endpoint Endpoint to get
+ * @returns
+ */
+const get = async <T = any>(endpoint: string) => {
+	const response = await instance.get<T>(endpoint);
 	return response.data;
 }
 
 /**
- * Create a new todo in the API
+ * Make a generic HTTP POST Request
  *
- * @param todo
+ * @param endpoint Endpoint to get
+ * @returns
  */
-export const createTodo = async (todo: Todo) => {
-	// Send a POST-request to http://localhost:3000/todos with the contents of `todo` as body
-    await axios.post(baseUrl + '/todos', todo, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+const post = async <Response, Payload>(endpoint: string, data: Payload) => {
+	const response = await instance.post<Response>(endpoint, data);
+	return response.data;
 }
 
-// Mark todo finished or unfinished
-export const finishTodo = async (isCompleted: boolean, id: string) => {
-    const response = await axios.patch(baseUrl + `/todos/${id}`, {
-        completed: isCompleted
-    })
-    if(response.status === 200) {
-        getTodosAndRender()
-    }
-    console.log(response)
+/**
+ * Get todos from API using axios
+ */
+export const getTodos = async () => {
+	return get<Todo[]>("/todos");
 }
 
+/**
+ * Get todo from API using axios
+ */
+export const getTodo = async (id: string) => {
+	return get("/todos/" + id);
+}
+
+/**
+ * Create a new todo in the API
+ */
+export const createTodo = async (data: Omit<Todo, "id">) => {
+	return post<Todo, Omit<Todo, "id">>("/todos", data);
+}
+
+/**
+ * Update a todo in the API
+ */
+export const updateTodo = async (id: string, data: Partial<Todo>) => {
+	// Send a PATCH-request to http://localhost:3000/todos/:id with the contents of `data` as body
+	const response = await instance.patch<Todo>("/todos/" + id, data);
+	return response.data;
+}
+
+/**
+ * Delete a todo in the API
+ */
 export const deleteTodo = async (id: string) => {
-        const response = await axios.delete(baseUrl + `/todos/${id}`)
-        if(response.status === 200) {
-            getTodosAndRender()
-        }
-}
-
-export const editTodo = async (editedTitle: string, id: string) => {
-    console.log(id)
-    try {
-        const response = await axios.patch(baseUrl + `/todos/${id}`, {
-            title: editedTitle
-        })
-        if(response.status === 200) {
-            console.log(response)
-            getTodosAndRender()
-        }
-        console.log(response)
-    } catch (error) {
-        console.error(error)
-    }
+	// Send a DELETE-request to http://localhost:3000/todos/:id
+	await instance.delete("/todos/" + id);
+	return true;
 }
